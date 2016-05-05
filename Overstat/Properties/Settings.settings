@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Overstat.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AccessToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AccessTokenSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SaveDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ConsumerKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">rIOTkNQfFcN7WcfWOsfe5cumu</Value>
+    </Setting>
+    <Setting Name="ConsumerSecret" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">npCjrBd9LWhDEUqqmgMZvNbdRy8OH7pIhUjZGKtjFi2xGxiRLG</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
