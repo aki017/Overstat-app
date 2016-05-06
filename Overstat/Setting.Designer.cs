@@ -96,7 +96,7 @@
       this.Controls.Add(this.startAuthButton);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "Setting";
-      this.Text = "Setting";
+      this.Text = "Setting("+ System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()+")";
       this.ResumeLayout(false);
       this.PerformLayout();
 

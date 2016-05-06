@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
+using Squirrel;
 
 namespace Overstat
 {
@@ -22,6 +23,14 @@ namespace Overstat
     [STAThread]
     private static void Main()
     {
+      Task.Run(async () =>
+      {
+        using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
+        {
+          await mgr.Result.UpdateApp();
+        }
+      });
+
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       var notify = new NotifyIcon();
@@ -34,15 +43,16 @@ namespace Overstat
       var thread = new Thread(new MainLoop().Loop);
       thread.IsBackground = true;
       thread.Start();
-      if (Properties.Settings.Default.AccessToken == "" || Properties.Settings.Default.AccessTokenSecret == "" || Properties.Settings.Default.SaveDir == "") {
+      if (Properties.Settings.Default.AccessToken == "" || Properties.Settings.Default.AccessTokenSecret == "" || Properties.Settings.Default.SaveDir == "")
+      {
         new Setting().Show();
       }
 
-        notify.MouseDoubleClick += new MouseEventHandler((_, __) =>
-        {
-          thread.Abort();
-          Application.Exit();
-        });
+      notify.MouseDoubleClick += new MouseEventHandler((_, __) =>
+      {
+        thread.Abort();
+        Application.Exit();
+      });
       Application.Run(overlay);
     }
 

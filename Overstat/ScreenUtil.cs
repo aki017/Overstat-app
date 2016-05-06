@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -47,6 +49,18 @@ namespace Overstat
       DeleteDC(hDest);
       ReleaseDC(hDesk, hSrce);
       return bmp;
+    }
+
+    public static double DetectImage(Mat src, Mat template, Mat mask)
+    {
+      using (var result = new Mat())
+      {
+        Cv2.MatchTemplate(src, template, result, TemplateMatchModes.CCorrNormed, mask);
+        double _ = 0;
+        double v = 0;
+        result.MinMaxLoc(out _, out v);
+        return v;
+      }
     }
   }
 }
