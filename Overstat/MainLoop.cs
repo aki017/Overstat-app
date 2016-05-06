@@ -125,7 +125,7 @@ namespace Overstat
               {
                 using (var im = ScreenUtil.CaptureImage(screen))
                 {
-                  im.Save(Path.Combine(Properties.Settings.Default.SaveDir + "\\" + i + "_1.png"));
+                  im.Save(Path.Combine(Properties.Settings.Default.SaveDir + "\\" + Counter + "_1.png"));
                 }
                 System.Threading.Thread.Sleep(1000);
                 return true;
@@ -158,7 +158,7 @@ namespace Overstat
               {
                 using (var im = ScreenUtil.CaptureImage(screen))
                 {
-                  im.Save(Path.Combine(Properties.Settings.Default.SaveDir + "\\" + i + "_2.png"));
+                  im.Save(Path.Combine(Properties.Settings.Default.SaveDir + "\\" + Counter + "_2.png"));
                 }
                 SubmitResult(Counter);
                 Counter++;
