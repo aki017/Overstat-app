@@ -54,7 +54,7 @@ namespace Overstat
         await Task.Delay(interval);
         this.Opacity -= 0.01;
       }
-      if (i==c) this.Opacity = 1;
+      if (i==c) this.Opacity = 0;
     }
   }
 }
