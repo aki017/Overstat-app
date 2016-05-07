@@ -36,12 +36,12 @@ namespace Overstat
       }
       else
       {
-        if(this.label1.Text != state.ToString() + "   " + t)
+        if(this.label1.Text != t)
         {
           i++;
           FadeIn(i);
         }
-        this.label1.Text = state.ToString() + "   " + t;
+        this.label1.Text = t;
       }
     }
 

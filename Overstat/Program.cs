@@ -15,8 +15,7 @@ namespace Overstat
   static class Program
   {
     public static OverlayScreen overlay;
-
-
+    
     /// <summary>
     /// アプリケーションのメイン エントリ ポイントです。
     /// </summary>
