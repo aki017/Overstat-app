@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Overstat.View"
+        xmlns:properties="clr-namespace:Overstat.Properties"
         mc:Ignorable="d"
         Title="SettingWindow" Height="200" Width="400">
   <Grid>
@@ -13,7 +14,9 @@
 
     <Label x:Name="FolderSetting" Content="FolderSetting" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" FontSize="16"/>
     <Label x:Name="ImageSaveFolder" Content="Save Folder" HorizontalAlignment="Left" Margin="14,111,0,0" VerticalAlignment="Top" Width="100" Height="30" />
-    <TextBox x:Name="ImageSaveFolderBox" HorizontalAlignment="Left" Margin="117,111,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="200"  Height="30" />
+    <TextBox x:Name="ImageSaveFolderBox" HorizontalAlignment="Left" Margin="117,111,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="200"  Height="30" IsEnabled="False" IsReadOnly="True"
+    Text="{Binding Source={x:Static properties:Settings.Default}, Path=SaveFolder}"
+     />
     <Button x:Name="Open" Content="Open" HorizontalAlignment="Left" Margin="322,111,0,0" VerticalAlignment="Top" Width="50" Height="30" Click="Open_Click" />
 
 

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Overstat.Model.GameData;
 
 namespace Overstat.Model
 {
   class MatchResult
   {
-    public GameData.Map Map;
+    public Map Map;
     public string MapName => Map.ToString();
-    public GameData.Hero Hero;
+    public Hero Hero;
     public string HeroName => Hero.ToString();
 
     public int Kills { get; set; }

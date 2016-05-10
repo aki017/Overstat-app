@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Overstat.Properties;
 
 namespace Overstat.View
 {
@@ -26,14 +16,13 @@ namespace Overstat.View
 
     private void Open_Click(object sender, RoutedEventArgs e)
     {
-
-      var dlg = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog();
-      dlg.Title = "作業フォルダの選択";
+      var dlg = new CommonOpenFileDialog();
+      dlg.Title = "Select SaveDir";
       dlg.IsFolderPicker = true;
-      dlg.InitialDirectory = this.ImageSaveFolderBox.Text;
+      dlg.InitialDirectory = ImageSaveFolderBox.Text;
       dlg.AddToMostRecentlyUsedList = false;
       dlg.AllowNonFileSystemItems = false;
-      dlg.DefaultDirectory = this.ImageSaveFolderBox.Text;
+      dlg.DefaultDirectory = ImageSaveFolderBox.Text;
       dlg.EnsureFileExists = true;
       dlg.EnsurePathExists = true;
       dlg.EnsureReadOnly = false;
@@ -41,9 +30,10 @@ namespace Overstat.View
       dlg.Multiselect = false;
       dlg.ShowPlacesList = true;
 
-      if (dlg.ShowDialog() == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
+      if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
       {
-        this.ImageSaveFolderBox.Text = dlg.FileName;
+        Settings.Default.SaveFolder = dlg.FileName;
+        Settings.Default.Save();
       }
     }
   }

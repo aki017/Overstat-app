@@ -1,21 +1,11 @@
-﻿using Overstat.Model;
-using Overstat.Model.GameData;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Overstat.Model;
+using Overstat.Model.GameData;
 using Overstat.View;
 
 namespace Overstat
@@ -25,25 +15,22 @@ namespace Overstat
   /// </summary>
   public partial class MainWindow : Window
   {
-    public static RoutedCommand OpenSettingCommand = new RoutedCommand();
-    public static RoutedCommand ExitApplicationCommand = new RoutedCommand();
-
     public MainWindow()
     {
       InitializeComponent();
+
+      new Capture().Start();
     }
     
     ObservableCollection<MatchResult> results = new ObservableCollection<MatchResult>();
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-
       int itemcount = 100;
-
-      var values = Enum.GetValues(typeof(Map));
+      
       Random random = new Random();
       for (int j = 0; j < itemcount; j++)
       {
-        results.Add(new MatchResult()
+        results.Add(new MatchResult
         {
           Map = randomEnum<Map>(random),
           Hero = randomEnum<Hero>(random),
@@ -52,7 +39,7 @@ namespace Overstat
           ObjectiveTime = random.Next(60),
           Damage = random.Next(3000),
           Heal = random.Next(10000),
-          Deaths = random.Next(15),
+          Deaths = random.Next(15)
         });
       }
       (FindResource("myView") as CollectionViewSource).Source  = results;
@@ -62,7 +49,7 @@ namespace Overstat
       return (T)Enum.GetValues(typeof(Map)).GetValue(r.Next(Enum.GetValues(typeof(Map)).Length));
     }
 
-    private GridViewColumnHeader _lastHeaderClicked = null;
+    private GridViewColumnHeader _lastHeaderClicked;
     private ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
     private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
@@ -73,8 +60,7 @@ namespace Overstat
       if (clickedHeader.Role != GridViewColumnHeaderRole.Padding)
       {
         ListSortDirection direction = ListSortDirection.Ascending;
-        if (clickedHeader == _lastHeaderClicked
-            && _lastDirection == ListSortDirection.Ascending)
+        if (clickedHeader == _lastHeaderClicked && _lastDirection == ListSortDirection.Ascending)
         {
           direction = ListSortDirection.Descending;
         }
