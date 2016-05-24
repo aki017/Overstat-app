@@ -1,12 +1,15 @@
-﻿<Window x:Class="Overstat.View.NotifyWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Overstat.View"
+        xmlns:Capture="clr-namespace:Overstat.Capture" x:Class="Overstat.View.NotifyWindow"
         mc:Ignorable="d"
-        Title="NotifyWindow" Height="300" Width="300" WindowStyle="None">
-    <Grid>
-        
-    </Grid>
+        Title="NotifyWindow" Height="150" Width="300" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True">
+  <Grid Background="#4C64CCFF">
+    <Label x:Name="label" Content="{Binding Path=Notify}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="130" Width="280" Foreground="White" BorderThickness="0" FontSize="24">
+    </Label>
+
+  </Grid>
 </Window>

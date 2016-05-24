@@ -1,6 +1,6 @@
 ﻿namespace Overstat.Model.GameData
 {
-  enum Hero
+  public enum Hero
   {
     Unknown,
     Genji,
@@ -28,7 +28,7 @@
 
   static class HeroEx
   {
-    static string ImageName(this Hero h)
+    public static string ImageName(this Hero h)
     {
       if (h == Hero.Soldier76)
       {

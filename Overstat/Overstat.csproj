@@ -161,8 +161,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Capture.cs" />
+    <Compile Include="APIClient.cs" />
+    <Compile Include="Capture\Capture.cs" />
+    <Compile Include="Capture\PlayingState.cs" />
     <Compile Include="ScreenCaptureUtil.cs" />
+    <Compile Include="TwitterUtil.cs" />
+    <Compile Include="View\NotifyBinding.cs" />
     <Compile Include="View\NotifyWindow.xaml.cs">
       <DependentUpon>NotifyWindow.xaml</DependentUpon>
     </Compile>

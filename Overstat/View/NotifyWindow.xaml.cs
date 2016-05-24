@@ -7,9 +7,11 @@ namespace Overstat.View
   /// </summary>
   public partial class NotifyWindow : Window
   {
-    public NotifyWindow()
+    public NotifyWindow(Capture.Capture c)
     {
       InitializeComponent();
+      
+      label.DataContext = c.Notify;
     }
   }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Text;
 using OpenCvSharp;
+using OpenCvSharp.Extensions;
 
 namespace Overstat
 {
@@ -90,16 +92,15 @@ namespace Overstat
       IntPtr hSrce = GetWindowDC(Instance.hOverwatchWindow);
       RECT winRect = new RECT();
       GetWindowRect(Instance.hOverwatchWindow, ref winRect);
-      var bmp = new Bitmap(width, height);
+      var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb);
       using (var g = Graphics.FromImage(bmp))
       {
         IntPtr hDC = g.GetHdc();
 
-        BitBlt(hDC, 0, 0, width, height, hSrce, x, y, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+        BitBlt(hDC, 0, 0, width, height, hSrce, x, y, CopyPixelOperation.SourceCopy);
         g.ReleaseHdc(hDC);
       }
       ReleaseDC(Instance.hOverwatchWindow, hSrce);
-
       return bmp;
     }
 
