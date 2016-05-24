@@ -8,9 +8,7 @@
         mc:Ignorable="d"
         Title="SettingWindow" Height="200" Width="400">
   <Grid>
-
     <Label x:Name="TwitterSetting" Content="TwitterSetting" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="16"/>
-    <Label x:Name="TBD" Content="TBD" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
 
     <Label x:Name="FolderSetting" Content="FolderSetting" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" FontSize="16"/>
     <Label x:Name="ImageSaveFolder" Content="Save Folder" HorizontalAlignment="Left" Margin="14,111,0,0" VerticalAlignment="Top" Width="100" Height="30" />
@@ -18,6 +16,7 @@
     Text="{Binding Source={x:Static properties:Settings.Default}, Path=SaveFolder}"
      />
     <Button x:Name="Open" Content="Open" HorizontalAlignment="Left" Margin="322,111,0,0" VerticalAlignment="Top" Width="50" Height="30" Click="Open_Click" />
+    <Button x:Name="AuthTwitter" Content="Authorize"  HorizontalAlignment="Left" Margin="14,46,0,0" VerticalAlignment="Top" Width="358" Height="30" IsEnabled="{Binding IsTweetable}"  Click="AuthTwitter_Click"/>
 
 
   </Grid>

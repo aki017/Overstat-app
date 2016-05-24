@@ -1,0 +1,14 @@
+﻿<Window x:Class="Overstat.View.TwitterAuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Overstat.View"
+        mc:Ignorable="d"
+        Title="TwitterAuthWindow" Height="150" Width="300">
+    <Grid>
+    <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="272"/>
+    <Button x:Name="button" Content="PIN" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="272" Height="71" Click="Button_OnClick"/>
+
+  </Grid>
+</Window>

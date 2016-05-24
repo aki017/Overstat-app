@@ -12,6 +12,8 @@ namespace Overstat.View
     public SettingWindow()
     {
       InitializeComponent();
+
+      TwitterSetting.DataContext = new TweetUtil();
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
@@ -35,6 +37,11 @@ namespace Overstat.View
         Settings.Default.SaveFolder = dlg.FileName;
         Settings.Default.Save();
       }
+    }
+
+    private void AuthTwitter_Click(object sender, RoutedEventArgs e)
+    {
+      TweetUtil.Auth();
     }
   }
 }
