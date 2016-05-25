@@ -49,7 +49,7 @@ namespace Overstat
       public Capture()
       {
         Notify.Notify = "Test";
-          Playing1Template = new Mat(GetTemplateImage("Playing1.png"));
+        Playing1Template = new Mat(GetTemplateImage("Playing1.png"));
         Playing1TemplateMask = new Mat(GetTemplateImage("Playing1Mask.png"));
         Result1Templates = new[] { new Mat(GetTemplateImage("Result1.png")) };
         Result1TemplateMasks = new[] { new Mat(GetTemplateImage("Result1Mask.png")) };
@@ -91,16 +91,11 @@ namespace Overstat
       public void Start()
       {
 
-        Task.Run(async () => {
-          try
+        Task.Run(() =>
+        {
+          using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
           {
-            using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
-            {
-              await mgr.Result.UpdateApp();
-            }
-          }
-          catch (Exception ex)
-          {
+            mgr.Wait();
           }
         });
 
@@ -129,10 +124,10 @@ namespace Overstat
               {
                 MatchResults.Add(new MatchResult());
               }
-              MatchResults.Last().Hero = MatchResults.Last().Hero==Hero.Unknown ? DetectHero() : MatchResults.Last().Hero;
+              MatchResults.Last().Hero = MatchResults.Last().Hero == Hero.Unknown ? DetectHero() : MatchResults.Last().Hero;
               break;
             case PlayingState.Result1:
-              targetPath = Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png");
+              targetPath = GetOutputPath(1);
               if (!File.Exists(targetPath))
               {
                 using (var im = ScreenCaptureUtil.CaptureWindow())
@@ -142,7 +137,7 @@ namespace Overstat
               }
               break;
             case PlayingState.Result2:
-              targetPath = Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png");
+              targetPath = GetOutputPath(2);
               if (!File.Exists(targetPath))
               {
                 using (var im = ScreenCaptureUtil.CaptureWindow())
@@ -155,14 +150,14 @@ namespace Overstat
               {
                 DetectScore();
                 if (File.Exists(targetPath) &&
-                    File.Exists($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"))
+                    File.Exists(GetOutputPath(2)))
                 {
                   TweetUtil.Tweet(MatchResults.Last(),
-                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"),
-                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png"));
+                    GetOutputPath(1),
+                    GetOutputPath(2));
                   APIClient.Submit(MatchResults.Last(),
-                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"),
-                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png"));
+                    GetOutputPath(1),
+                    GetOutputPath(2));
                 }
                 PostCount++;
               }
@@ -189,6 +184,11 @@ namespace Overstat
         return PlayingState.Unknown;
       }
 
+      private string PrefixTime = DateTime.Now.ToString("HHmmss");
+      public string GetOutputPath(int num)
+      {
+        return Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{PrefixTime}{MatchResults.Count}_{num}.png").ToString();
+      }
 
       public string GetTemplateImage(string path)
       {
