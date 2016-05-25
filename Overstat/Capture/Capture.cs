@@ -90,19 +90,32 @@ namespace Overstat
 
       public void Start()
       {
-
-        Task.Run(async () =>
-        {
-          using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
-          {
-            mgr.Wait();
-            var r = await mgr.Result.UpdateApp();
-          }
-        });
+        new Thread(Update);
 
         thread = new Thread(Loop);
         thread.IsBackground = true;
         thread.Start();
+      }
+
+      public void Update()
+      {
+        var updatesAvailableTask = AppUpdater.CheckForUpdates();
+        updatesAvailableTask.ContinueWith(isAvailable =>
+        {
+          isAvailable.Wait(TimeSpan.FromMinutes(1));
+          bool updatesAvailable = isAvailable.Result;
+          //Only check once one launch then release UpdateManager.
+          if (!updatesAvailable)
+          {
+            AppUpdater.Dispose();
+            return;
+          }
+
+          AppUpdater.ApplyUpdates().ContinueWith(t =>
+          {
+            UpdateManager.RestartApp();
+          });
+        });
       }
 
       public void Loop()

@@ -70,8 +70,8 @@
       <HintPath>..\packages\squirrel.windows.1.4.0\lib\Net45\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -162,6 +162,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="APIClient.cs" />
+    <Compile Include="AppUpdater.cs" />
     <Compile Include="Capture\Capture.cs" />
     <Compile Include="Capture\PlayingState.cs" />
     <Compile Include="ScreenCaptureUtil.cs" />
@@ -399,10 +400,10 @@
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-  <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-    <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo"/>
-  </GetAssemblyIdentity>
-  <Exec Command="nuget pack Overstat.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
-  <Exec Command="squirrel --releasify $(OutDir)Overstat.%(myAssemblyInfo.Version).nupkg" />
-</Target>
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo" />
+    </GetAssemblyIdentity>
+    <Exec Command="nuget pack Overstat.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+    <Exec Command="squirrel --releasify $(OutDir)Overstat.%(myAssemblyInfo.Version).nupkg" />
+  </Target>
 </Project>
