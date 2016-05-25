@@ -20,33 +20,6 @@ namespace Overstat
     public MainWindow()
     {
       InitializeComponent();
-      Task.Run(async () => {
-        try
-        {
-          using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
-          {
-            // Note, in most of these scenarios, the app exits after this method completes!
-            SquirrelAwareApp.HandleEvents(
-                onInitialInstall: v => {
-                  mgr.Result.CreateShortcutForThisExe();
-                },
-                onAppUpdate: v => {
-                  mgr.Result.CreateShortcutForThisExe();
-                },
-                onAppUninstall: v => {
-                  mgr.Result.RemoveShortcutForThisExe();
-                },
-                onFirstRun: () => {
-                }
-            );
-
-            await mgr.Result.UpdateApp();
-          }
-        }
-        catch (Exception ex)
-        {
-        }
-      });
       
       var c = new Capture.Capture();
       c.Start();

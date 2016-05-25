@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Overstat.Model.GameData;
 using Overstat.Model;
 using Overstat.View;
+using Squirrel;
 
 namespace Overstat
 {
@@ -88,6 +90,20 @@ namespace Overstat
 
       public void Start()
       {
+
+        Task.Run(async () => {
+          try
+          {
+            using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
+            {
+              await mgr.Result.UpdateApp();
+            }
+          }
+          catch (Exception ex)
+          {
+          }
+        });
+
         thread = new Thread(Loop);
         thread.IsBackground = true;
         thread.Start();
