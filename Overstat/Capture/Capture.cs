@@ -91,11 +91,12 @@ namespace Overstat
       public void Start()
       {
 
-        Task.Run(() =>
+        Task.Run(async () =>
         {
           using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
           {
             mgr.Wait();
+            var r = await mgr.Result.UpdateApp();
           }
         });
 
