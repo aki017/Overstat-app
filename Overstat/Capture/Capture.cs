@@ -90,8 +90,6 @@ namespace Overstat
 
       public void Start()
       {
-        new Thread(Update);
-
         thread = new Thread(Loop);
         thread.IsBackground = true;
         thread.Start();
