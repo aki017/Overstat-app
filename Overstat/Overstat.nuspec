@@ -13,5 +13,7 @@
   </metadata>
   <files>
     <file src="*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
+    <file src="Model\**" target="lib\net45\Model" />
+    <file src="dll\**" target="lib\net45\dll" />
   </files>
 </package>

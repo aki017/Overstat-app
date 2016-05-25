@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Overstat.Properties;
 
@@ -14,6 +15,7 @@ namespace Overstat.View
       InitializeComponent();
 
       TwitterSetting.DataContext = new TweetUtil();
+      VersionLabel.Content = Assembly.GetExecutingAssembly().GetName().Version.ToString();
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
