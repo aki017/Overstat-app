@@ -30,7 +30,7 @@ namespace Overstat
       );
       
       Status s = await tokens.Statuses.UpdateAsync(
-          status: string.Format("OverWatchを{0}でプレイ中！ {1}Kill/{2}Death #overstat", result.HeroName, result.Kills, result.Deaths),
+          status: string.Format("OverWatchを{0}でプレイ中！ {1}Kill/{2}Death #overstat @Overstatapp", result.HeroName, result.Kills, result.Deaths),
           media_ids: results.Select(x => x.MediaId)
       );
     }

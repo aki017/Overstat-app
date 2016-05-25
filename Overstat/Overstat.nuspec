@@ -15,5 +15,7 @@
     <file src="*.*" target="lib\net45\" exclude="*.pdb;*.nupkg;*.vshost.*"/>
     <file src="Model\**" target="lib\net45\Model" />
     <file src="dll\**" target="lib\net45\dll" />
+    <file src="x86\**" target="lib\net45\x86" />
+    <file src="x64\**" target="lib\net45\x64" />
   </files>
 </package>
