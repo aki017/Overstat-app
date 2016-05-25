@@ -13,13 +13,13 @@ namespace Overstat
 {
   class TweetUtil
   {
-    bool IsTweetable => Properties.Settings.Default.AccessToken != null && Properties.Settings.Default.AccessTokenSecret != null;
+    static  bool IsTweetable => Properties.Settings.Default.AccessToken != null && Properties.Settings.Default.AccessTokenSecret != null;
 
     public static void Auth()
     {
       new TwitterAuthWindow().Show();
     }
-    async void Tweet(MatchResult result, string image1, string image2)
+    public static async void Tweet(MatchResult result, string image1, string image2)
     {
       if (!IsTweetable) return;
       var tokens = Tokens.Create(Properties.Settings.Default.ConsumerKey, Properties.Settings.Default.ConsumerSecret,

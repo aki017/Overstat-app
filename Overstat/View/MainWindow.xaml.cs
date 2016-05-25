@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Overstat.Model;
 using Overstat.Model.GameData;
 using Overstat.View;
+using Squirrel;
 
 namespace Overstat
 {
@@ -18,6 +20,15 @@ namespace Overstat
     public MainWindow()
     {
       InitializeComponent();
+
+
+      Task.Run(async () =>
+      {
+        using (var mgr = UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
+        {
+          await mgr.Result.UpdateApp();
+        }
+      });
       var c = new Capture.Capture();
       c.Start();
 

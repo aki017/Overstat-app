@@ -49,7 +49,7 @@ namespace Overstat.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("rIOTkNQfFcN7WcfWOsfe5cumu")]
         public string ConsumerKey {
             get {
                 return ((string)(this["ConsumerKey"]));
@@ -58,7 +58,7 @@ namespace Overstat.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("npCjrBd9LWhDEUqqmgMZvNbdRy8OH7pIhUjZGKtjFi2xGxiRLG")]
         public string ConsumerSecret {
             get {
                 return ((string)(this["ConsumerSecret"]));

@@ -161,9 +161,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Capture.cs" />
+    <Compile Include="APIClient.cs" />
+    <Compile Include="Capture\Capture.cs" />
+    <Compile Include="Capture\PlayingState.cs" />
     <Compile Include="ScreenCaptureUtil.cs" />
     <Compile Include="TweetUtil.cs" />
+    <Compile Include="View\NotifyBinding.cs" />
     <Compile Include="View\NotifyWindow.xaml.cs">
       <DependentUpon>NotifyWindow.xaml</DependentUpon>
     </Compile>
@@ -393,11 +396,13 @@
     <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.101.0\build\net451\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.101.0\build\net451\System.Data.SQLite.Core.targets'))" />
   </Target>
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.101.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.101.0\build\net451\System.Data.SQLite.Core.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
+  <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+    <Output TaskParameter="Assemblies" ItemName="myAssemblyInfo"/>
+  </GetAssemblyIdentity>
+  <Exec Command="nuget pack Overstat.nuspec -Version %(myAssemblyInfo.Version) -Properties Configuration=Release -OutputDirectory $(OutDir) -BasePath $(OutDir)" />
+  <Exec Command="squirrel --releasify $(OutDir)Overstat.%(myAssemblyInfo.Version).nupkg" />
+</Target>
 </Project>

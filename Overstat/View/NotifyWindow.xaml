@@ -7,7 +7,7 @@
         xmlns:Capture="clr-namespace:Overstat.Capture" x:Class="Overstat.View.NotifyWindow"
         mc:Ignorable="d"
         Title="NotifyWindow" Height="150" Width="300" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True">
-  <Grid Background="#4C64CCFF">
+  <Grid Background="#4C64CCFF" Visibility="Hidden">
     <Label x:Name="label" Content="{Binding Path=Notify}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="130" Width="280" Foreground="White" BorderThickness="0" FontSize="24">
     </Label>
 

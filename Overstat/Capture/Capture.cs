@@ -136,15 +136,22 @@ namespace Overstat
 
               if (PostCount < MatchResults.Count)
               {
-                PostCount++;
                 DetectScore();
-                APIClient.Submit(MatchResults.Last(),
-                  Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"),
-                  Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png"));
+                if (File.Exists(targetPath) &&
+                    File.Exists($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"))
+                {
+                  TweetUtil.Tweet(MatchResults.Last(),
+                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"),
+                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png"));
+                  APIClient.Submit(MatchResults.Last(),
+                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_1.png"),
+                    Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{MatchResults.Count}_2.png"));
+                }
+                PostCount++;
               }
               break;
           }
-          Thread.Sleep(300);
+          Thread.Sleep(1000);
         }
       }
 
