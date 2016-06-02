@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using OpenCvSharp;
 using Overstat.Model;
 using Overstat.Model.GameData;
 using Overstat.View;
 using Squirrel;
+using Window = System.Windows.Window;
 
 namespace Overstat
 {
@@ -20,7 +23,7 @@ namespace Overstat
     public MainWindow()
     {
       InitializeComponent();
-      
+
       var c = new Capture.Capture();
       c.Start();
 

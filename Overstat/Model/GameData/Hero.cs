@@ -30,10 +30,6 @@
   {
     public static string ImageName(this Hero h)
     {
-      if (h == Hero.Soldier76)
-      {
-        return "soldier-76";
-      }
       return h.ToString().ToLower();
     }
   }

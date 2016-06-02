@@ -24,7 +24,7 @@ namespace Overstat
       private Mat[] Result1TemplateMasks;
       private Mat[] Result2Templates;
       private Mat[] Result2TemplateMasks;
-      private Dictionary<Hero, Mat> CharactorTemplates;
+      private Dictionary<Hero, Mat[]> HeroTemplates;
       private Mat CharactorMask;
       private Mat[] NumberTemplates;
       private Mat[] NumberTemplateMasks;
@@ -55,7 +55,16 @@ namespace Overstat
         Result1TemplateMasks = new[] { new Mat(GetTemplateImage("Result1Mask.png")) };
         Result2Templates = new[] { new Mat(GetTemplateImage("Result2.png")) };
         Result2TemplateMasks = new[] { new Mat(GetTemplateImage("Result2Mask.png")) };
-        CharactorTemplates = new Dictionary<Hero, Mat>();
+        HeroTemplates = Enum.GetValues(typeof(Hero)).Cast<Hero>().ToDictionary(hero => hero, hero =>
+       {
+         if (hero == Hero.Unknown)
+         {
+           return new Mat[0];
+         }
+         var dirname = hero.ImageName();
+         var dir = Path.Combine(Environment.CurrentDirectory, "Model", "GameData", "Template", "Hero", dirname);
+         return new DirectoryInfo(dir).GetFiles().Select(f => new Mat(f.FullName, ImreadModes.GrayScale)).ToArray();
+       });
         CharactorMask = new Mat(GetTemplateImage("Hero\\CharaMask.png"));
         NumberTemplates = new[]
         {
@@ -95,27 +104,6 @@ namespace Overstat
         thread.Start();
       }
 
-      public void Update()
-      {
-        var updatesAvailableTask = AppUpdater.CheckForUpdates();
-        updatesAvailableTask.ContinueWith(isAvailable =>
-        {
-          isAvailable.Wait(TimeSpan.FromMinutes(1));
-          bool updatesAvailable = isAvailable.Result;
-          //Only check once one launch then release UpdateManager.
-          if (!updatesAvailable)
-          {
-            AppUpdater.Dispose();
-            return;
-          }
-
-          AppUpdater.ApplyUpdates().ContinueWith(t =>
-          {
-            UpdateManager.RestartApp();
-          });
-        });
-      }
-
       public void Loop()
       {
         while (true)
@@ -136,6 +124,7 @@ namespace Overstat
               {
                 MatchResults.Add(new MatchResult());
               }
+              DetectHero().ToString();
               MatchResults.Last().Hero = MatchResults.Last().Hero == Hero.Unknown ? DetectHero() : MatchResults.Last().Hero;
               break;
             case PlayingState.Result1:
@@ -259,26 +248,36 @@ namespace Overstat
 
       public Hero DetectHero()
       {
-        return Enum.GetValues(typeof(Hero)).Cast<Hero>().FirstOrDefault(DetectHero);
-      }
-
-      public bool DetectHero(Hero hero)
-      {
-        if (hero == Hero.Unknown) return false;
-
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(135, 880, 100, 120))
+        using (var bmp = ScreenCaptureUtil.CaptureWindow(1490, 900, 200, 100))
         using (var src = bmp.ToMat())
+        using (var gray = src.CvtColor(ColorConversionCodes.RGB2GRAY))
+        using (var binary = gray.Threshold(200, 255, ThresholdTypes.Binary))
         {
-          if (!CharactorTemplates.ContainsKey(hero))
+          var max = 0d;
+          var target = Hero.Unknown;
+          foreach (var hero in Enum.GetValues(typeof(Hero)).Cast<Hero>())
           {
-            CharactorTemplates[hero] = new Mat(GetTemplateImage("Hero\\" + hero.ImageName() + ".png"));
+            if (hero == Hero.Unknown)
+            {
+              continue;
+            }
+
+            foreach (var t in HeroTemplates[hero])
+            {
+              var v = ScreenCaptureUtil.DetectImage(binary, t, binary);
+              if ( v > 0.9)
+              {
+                return hero;
+              }
+              if (v > max)
+              {
+                max = v;
+                target = hero;
+              }
+            }
           }
 
-          if (ScreenCaptureUtil.DetectImage(src, CharactorTemplates[hero], CharactorMask) > 0.97)
-          {
-            return true;
-          }
-          return false;
+          return target;
         }
       }
 
