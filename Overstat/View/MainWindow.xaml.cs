@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,9 +29,9 @@ namespace Overstat
       c.Start();
 
       var notificationWindow = new NotifyWindow(c);
-      var desktop = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+      var desktop = System.Windows.Forms.Screen.AllScreens.First().Bounds;
       notificationWindow.Top = desktop.Height - (notificationWindow.Height + 10);
-      notificationWindow.Left = desktop.Width - (notificationWindow.Width + 10);
+      notificationWindow.Left = desktop.Left + desktop.Width - (notificationWindow.Width + 10);
       notificationWindow.Show();
     }
     

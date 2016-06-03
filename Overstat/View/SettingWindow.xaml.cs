@@ -45,5 +45,11 @@ namespace Overstat.View
     {
       TweetUtil.Auth();
     }
+    protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+    {
+      Settings.Default.Save();
+
+      base.OnClosing(e);
+    }
   }
 }

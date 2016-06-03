@@ -4,11 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Overstat.View"
+        xmlns:properties="clr-namespace:Overstat.Properties"
         xmlns:Capture="clr-namespace:Overstat.Capture" x:Class="Overstat.View.NotifyWindow"
         mc:Ignorable="d"
-        Title="NotifyWindow" Height="150" Width="300" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True">
-  <Grid Background="#4C64CCFF" Visibility="Hidden">
-    <Label x:Name="label" Content="{Binding Path=Notify}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="130" Width="280" Foreground="White" BorderThickness="0" FontSize="24">
+        Title="NotifyWindow" Height="650" Width="300" WindowStyle="None" AllowsTransparency="True" Background="Transparent" Topmost="True">
+  <Window.Resources>
+    <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+  </Window.Resources>
+  <Grid Background="#4C64CCFF" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowNotification, Mode=TwoWay, Converter={StaticResource BoolToVisibility}}">
+    <Label x:Name="label" Content="{Binding Path=Notify}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="630" Width="280" Foreground="White" BorderThickness="0" FontSize="24">
     </Label>
 
   </Grid>

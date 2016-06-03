@@ -45,6 +45,7 @@ namespace Overstat
 
       private List<MatchResult> MatchResults = new List<MatchResult>();
       private int PostCount = 0;
+      private Dictionary<Hero, int> HeroDetectLog = new Dictionary<Hero, int>();
 
       public Capture()
       {
@@ -124,11 +125,22 @@ namespace Overstat
               {
                 MatchResults.Add(new MatchResult());
               }
-              DetectHero().ToString();
-              MatchResults.Last().Hero = MatchResults.Last().Hero == Hero.Unknown ? DetectHero() : MatchResults.Last().Hero;
+              var hero = DetectHero();
+              var mes = "";
+              foreach (var h in HeroDetectLog)
+              {
+                mes += h.Key.ToString()+ " : "+h.Value+"\n";
+              }
+              Notify.Notify = mes;
+              if (!HeroDetectLog.ContainsKey(hero))
+              {
+                HeroDetectLog[hero] = 0;
+              }
+              HeroDetectLog[hero]++;
               break;
             case PlayingState.Result1:
               targetPath = GetOutputPath(1);
+
               if (!File.Exists(targetPath))
               {
                 using (var im = ScreenCaptureUtil.CaptureWindow())
@@ -149,6 +161,8 @@ namespace Overstat
 
               if (PostCount < MatchResults.Count)
               {
+                MatchResults.Last().Hero = HeroDetectLog.OrderBy(kvp => kvp.Value).First().Key;
+                HeroDetectLog.Clear();
                 DetectScore();
                 if (File.Exists(targetPath) &&
                     File.Exists(GetOutputPath(2)))
@@ -264,7 +278,7 @@ namespace Overstat
 
             foreach (var t in HeroTemplates[hero])
             {
-              var v = ScreenCaptureUtil.DetectImage(binary, t, binary);
+              var v = ScreenCaptureUtil.DetectImage(binary, t, null);
               if ( v > 0.9)
               {
                 return hero;
