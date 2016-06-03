@@ -161,7 +161,7 @@ namespace Overstat
 
               if (PostCount < MatchResults.Count)
               {
-                MatchResults.Last().Hero = HeroDetectLog.OrderBy(kvp => kvp.Value).First().Key;
+                MatchResults.Last().Hero = HeroDetectLog.OrderBy(kvp => kvp.Value).Last().Key;
                 HeroDetectLog.Clear();
                 DetectScore();
                 if (File.Exists(targetPath) &&
