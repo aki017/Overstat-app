@@ -104,7 +104,7 @@ namespace Overstat
       return bmp;
     }
 
-    public static double DetectImage(Mat src, Mat template, Mat mask)
+    public static double DetectImage(Mat src, Mat template, Mat mask = null)
     {
       using (var result = new Mat())
       {

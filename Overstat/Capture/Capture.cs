@@ -18,8 +18,16 @@ namespace Overstat
   {
     public class Capture
     {
+      /// <summary>
+      /// Normal
+      /// </summary>
       private Mat Playing1Template;
       private Mat Playing1TemplateMask;
+      /// <summary>
+      /// Ultimate Ready
+      /// </summary>
+      private Mat Playing2Template;
+      private Mat Playing2TemplateMask;
       private Mat[] Result1Templates;
       private Mat[] Result1TemplateMasks;
       private Mat[] Result2Templates;
@@ -35,7 +43,6 @@ namespace Overstat
       {
         get
         {
-          Notify.Notify = playingStates.GroupBy(s => s).OrderBy(g => g.Count()).First().Key.ToString();
           return playingStates.GroupBy(s => s).OrderBy(g => g.Count()).First().Key;
         }
         set { playingStates[playingStatePointer++ % 5] = value; }
@@ -49,9 +56,10 @@ namespace Overstat
 
       public Capture()
       {
-        Notify.Notify = "Test";
         Playing1Template = new Mat(GetTemplateImage("Playing1.png"));
         Playing1TemplateMask = new Mat(GetTemplateImage("Playing1Mask.png"));
+        Playing2Template = new Mat(GetTemplateImage("Playing2.png"));
+        Playing2TemplateMask = new Mat(GetTemplateImage("Playing2Mask.png"));
         Result1Templates = new[] { new Mat(GetTemplateImage("Result1.png")) };
         Result1TemplateMasks = new[] { new Mat(GetTemplateImage("Result1Mask.png")) };
         Result2Templates = new[] { new Mat(GetTemplateImage("Result2.png")) };
@@ -126,12 +134,6 @@ namespace Overstat
                 MatchResults.Add(new MatchResult());
               }
               var hero = DetectHero();
-              var mes = "";
-              foreach (var h in HeroDetectLog)
-              {
-                mes += h.Key.ToString()+ " : "+h.Value+"\n";
-              }
-              Notify.Notify = mes;
               if (!HeroDetectLog.ContainsKey(hero))
               {
                 HeroDetectLog[hero] = 0;
@@ -217,16 +219,15 @@ namespace Overstat
         return process != default(Process);
       }
 
-
       public bool CheckPlaying()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(860, 800, 200, 230))
+        using (var bmp = ScreenCaptureUtil.CaptureWindow(890, 840, 140, 140))
         using (var src = bmp.ToMat())
         {
-          if (ScreenCaptureUtil.DetectImage(src, Playing1Template, Playing1TemplateMask) > 0.9)
-          {
-            return true;
-          }
+          var v1 = ScreenCaptureUtil.DetectImage(src, Playing1Template, Playing1TemplateMask);
+          var v2 = ScreenCaptureUtil.DetectImage(src, Playing2Template, Playing2TemplateMask);
+          Notify.Notify = $"{v1}\n{v2}";
+          if (v1 > 0.9 || v2 > 0.9) return true;
           return false;
         }
       }
@@ -278,8 +279,8 @@ namespace Overstat
 
             foreach (var t in HeroTemplates[hero])
             {
-              var v = ScreenCaptureUtil.DetectImage(binary, t, null);
-              if ( v > 0.9)
+              var v = ScreenCaptureUtil.DetectImage(binary, t);
+              if (v > 0.9)
               {
                 return hero;
               }

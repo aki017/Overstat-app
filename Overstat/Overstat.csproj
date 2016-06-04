@@ -237,12 +237,6 @@
     <Resource Include="Icon\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Model\GameData\Template\Playing1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Model\GameData\Template\Playing1Mask.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Model\GameData\Template\Result1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -256,7 +250,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Model\GameData\Template\NumFont\0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -492,6 +485,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Model\GameData\Template\Hero\zenyatta\1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model\GameData\Template\Playing1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Model\GameData\Template\Playing2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model\GameData\Template\Playing1Mask.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Model\GameData\Template\Playing2Mask.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
