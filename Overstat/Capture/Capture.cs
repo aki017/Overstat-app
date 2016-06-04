@@ -28,7 +28,10 @@ namespace Overstat
       /// </summary>
       private Mat Playing2Template;
       private Mat Playing2TemplateMask;
-      private Mat[] Result1Templates;
+
+      private Mat PlayingGageTemplate;
+      private Mat PlayingGageTemplateMask;
+      private Mat[] Result1Templates; 
       private Mat[] Result1TemplateMasks;
       private Mat[] Result2Templates;
       private Mat[] Result2TemplateMasks;
@@ -60,6 +63,8 @@ namespace Overstat
         Playing1TemplateMask = new Mat(GetTemplateImage("Playing1Mask.png"));
         Playing2Template = new Mat(GetTemplateImage("Playing2.png"));
         Playing2TemplateMask = new Mat(GetTemplateImage("Playing2Mask.png"));
+        PlayingGageTemplate = new Mat(GetTemplateImage("PlayingGage.png"));
+        PlayingGageTemplateMask = new Mat(GetTemplateImage("PlayingGageMask.png"));
         Result1Templates = new[] { new Mat(GetTemplateImage("Result1.png")) };
         Result1TemplateMasks = new[] { new Mat(GetTemplateImage("Result1Mask.png")) };
         Result2Templates = new[] { new Mat(GetTemplateImage("Result2.png")) };
@@ -226,8 +231,9 @@ namespace Overstat
         {
           var v1 = ScreenCaptureUtil.DetectImage(src, Playing1Template, Playing1TemplateMask);
           var v2 = ScreenCaptureUtil.DetectImage(src, Playing2Template, Playing2TemplateMask);
-          Notify.Notify = $"{v1}\n{v2}";
-          if (v1 > 0.9 || v2 > 0.9) return true;
+          //var gage = ScreenCaptureUtil.DetectImage(src, PlayingGageTemplate, PlayingGageTemplateMask);
+          //Notify.Notify = $"{v1}\n{v2}\n{gage}";
+          if (v1 > 0.98 || v2 > 0.98) return true;
           return false;
         }
       }
