@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Squirrel;
 
@@ -20,6 +21,20 @@ namespace Overstat
           await mgr.UpdateApp();
         }
       });
+      AppDomain.CurrentDomain.UnhandledException += (sender, args) => ErrorHandle(args.ExceptionObject as Exception);
+      DispatcherUnhandledException += (sender, args) =>
+      {
+        args.Handled = true;
+        ErrorHandle(args.Exception);
+      };
+      Dispatcher.UnhandledException += (sender, args) => ErrorHandle(args.Exception);
+
+    }
+
+    public void ErrorHandle(Exception e)
+    {
+      MessageBox.Show(e.ToString(), "エラー");
+      Shutdown();
     }
   }
 }
