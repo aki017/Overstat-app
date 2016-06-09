@@ -56,9 +56,11 @@ namespace Overstat
       private List<MatchResult> MatchResults = new List<MatchResult>();
       private int PostCount = 0;
       private Dictionary<Hero, int> HeroDetectLog = new Dictionary<Hero, int>();
+      private DXGICapture CaptureInstance;
 
       public Capture()
       {
+        CaptureInstance = new DXGICapture();
         Playing1Template = new Mat(GetTemplateImage("Playing1.png"));
         Playing1TemplateMask = new Mat(GetTemplateImage("Playing1Mask.png"));
         Playing2Template = new Mat(GetTemplateImage("Playing2.png"));
@@ -139,6 +141,7 @@ namespace Overstat
                 MatchResults.Add(new MatchResult());
               }
               var hero = DetectHero();
+              Notify.Notify = hero.ToString();
               if (!HeroDetectLog.ContainsKey(hero))
               {
                 HeroDetectLog[hero] = 0;
@@ -150,9 +153,9 @@ namespace Overstat
 
               if (!File.Exists(targetPath))
               {
-                using (var im = ScreenCaptureUtil.CaptureWindow())
+                using (var im = CaptureInstance.GetCapture())
                 {
-                  im.Save(targetPath);
+                  im.SaveImage(targetPath);
                 }
               }
               break;
@@ -160,9 +163,9 @@ namespace Overstat
               targetPath = GetOutputPath(2);
               if (!File.Exists(targetPath))
               {
-                using (var im = ScreenCaptureUtil.CaptureWindow())
+                using (var im = CaptureInstance.GetCapture())
                 {
-                  im.Save(targetPath);
+                  im.SaveImage(targetPath);
                 }
               }
 
@@ -185,7 +188,7 @@ namespace Overstat
               }
               break;
           }
-          Thread.Sleep(1000);
+          Thread.Sleep(100);
         }
       }
 
@@ -226,8 +229,7 @@ namespace Overstat
 
       public bool CheckPlaying()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(890, 840, 140, 140))
-        using (var src = bmp.ToMat())
+        using (var src = CaptureInstance.GetCapture(890, 840, 140, 140))
         {
           var v1 = ScreenCaptureUtil.DetectImage(src, Playing1Template, Playing1TemplateMask);
           var v2 = ScreenCaptureUtil.DetectImage(src, Playing2Template, Playing2TemplateMask);
@@ -240,8 +242,7 @@ namespace Overstat
 
       public bool CheckResult1()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(1470, 45, 228, 58))
-        using (var src = bmp.ToMat())
+        using (var src = CaptureInstance.GetCapture(1470, 45, 228, 58))
         {
           if (Result1Templates.Where((t, i) => ScreenCaptureUtil.DetectImage(src, t, Result1TemplateMasks[i]) > 0.99).Any())
           {
@@ -253,8 +254,7 @@ namespace Overstat
 
       public bool CheckResult2()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(1470, 45, 180, 58))
-        using (var src = bmp.ToMat())
+        using (var src = CaptureInstance.GetCapture(1470, 45, 180, 58))
         {
           for (var i = 0; i < Result2Templates.Length; i++)
           {
@@ -269,8 +269,7 @@ namespace Overstat
 
       public Hero DetectHero()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow(1490, 900, 200, 100))
-        using (var src = bmp.ToMat())
+        using (var src = CaptureInstance.GetCapture(1490, 900, 200, 100))
         using (var gray = src.CvtColor(ColorConversionCodes.RGB2GRAY))
         using (var binary = gray.Threshold(200, 255, ThresholdTypes.Binary))
         {
@@ -304,8 +303,7 @@ namespace Overstat
 
       public void DetectScore()
       {
-        using (var bmp = ScreenCaptureUtil.CaptureWindow())
-        using (var src = bmp.ToMat())
+        using (var src = CaptureInstance.GetCapture())
         {
           var result = MatchResults.Last();
           var target = src.ExtractChannel(1).RowRange(420, 520);
@@ -314,9 +312,9 @@ namespace Overstat
 
           using (var tmp = new Mat())
           {
-            for (var ix = 10; ix < bmp.Width / 10 - 10; ix++)
+            for (var ix = 10; ix < src.Width / 10 - 10; ix++)
             {
-              var t = target.ColRange(ix * 10, Math.Min(ix * 10 + 60, bmp.Width - 60));
+              var t = target.ColRange(ix * 10, Math.Min(ix * 10 + 60, src.Width - 60));
 
               var r = Enumerable.Range(0, 10).Select((i) =>
               {

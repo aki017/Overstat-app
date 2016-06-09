@@ -81,7 +81,7 @@ namespace Overstat
     }
 
     public IntPtr hOverwatchWindow;
-    public static Bitmap CaptureWindow(int x = 0, int y = 0, int width = -1, int height = -1)
+    public static Bitmap CaptureWindow_(int x = 0, int y = 0, int width = -1, int height = -1)
     {
       x = Math.Min(x, Instance.ScreenRect.right - Instance.ScreenRect.left);
       y = Math.Min(y, Instance.ScreenRect.bottom - Instance.ScreenRect.top);

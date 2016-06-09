@@ -1,7 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using OpenCvSharp;
+using OpenCvSharp.Extensions;
+using Overstat.Capture;
+using SharpDX.DXGI;
 using Squirrel;
+using Window = OpenCvSharp.Window;
 
 namespace Overstat
 {
@@ -10,6 +19,7 @@ namespace Overstat
   /// </summary>
   public partial class App : Application
   {
+
     protected override void OnStartup(StartupEventArgs e)
     {
       base.OnStartup(e);
