@@ -15,6 +15,8 @@ namespace Overstat.Capture
   // ReSharper disable once InconsistentNaming
   public class DXGICapture : ICapture, IDisposable
   {
+    public static DXGICapture Instance { get; private set; } = new DXGICapture();
+    private readonly object locker = new object();
     public string ApiName()
     {
       return "Desktop Duplication API";
@@ -49,8 +51,9 @@ namespace Overstat.Capture
     public Adapter1[] Adapters => factory.Adapters1;
     public Output[] Outputs => factory.Adapters1[AdapterID].Outputs;
 
-    public DXGICapture()
+    private DXGICapture()
     {
+      Instance = this;
       device = new Device(DriverType.Hardware);
       factory = new Factory1();
 
@@ -103,53 +106,58 @@ namespace Overstat.Capture
     public Mat GetCapture(int x = 0, int y = 0, int width = 1920, int height = 1080)
     {
       if (duplicatedOutput == null) return null;
-      using (var screenTexture = new Texture2D(device, texdes))
+      lock (locker)
       {
-        Resource screenResource = null;
-        DataStream dataStream;
-        Surface screenSurface;
+
+        using (var screenTexture = new Texture2D(device, texdes))
+        {
+          Resource screenResource = null;
+          DataStream dataStream;
+          Surface screenSurface;
 
 
-        OutputDuplicateFrameInformation duplicateFrameInformation;
-        try
-        {
-          duplicatedOutput.AcquireNextFrame(1000, out duplicateFrameInformation, out screenResource);
-        }
-        catch (SharpDXException ee)
-        {
-          if (ee.ResultCode.Code == ResultCode.WaitTimeout.Result.Code)
-          {
-            return GetCapture(x, y, width, height);
-          }
-          else if (ee.ResultCode.Code == ResultCode.AccessLost.Result.Code)
-          {
-            return GetCapture(x, y, width, height);
-          }
-          else
-          {
-            throw ee;
-          }
-        }
-
-        device.ImmediateContext.CopyResource(screenResource.QueryInterface<SharpDX.Direct3D11.Resource>(), screenTexture);
-        screenSurface = screenTexture.QueryInterface<Surface>();
-        screenSurface.Map(MapFlags.Read, out dataStream);
-        using (var a = CopyImageToMat(1920, 1080, dataStream))
-        {
-          dataStream.Close();
-          screenSurface.Unmap();
-          screenSurface.Dispose();
-          screenResource.Dispose();
+          OutputDuplicateFrameInformation duplicateFrameInformation;
           try
           {
-            duplicatedOutput.ReleaseFrame();
+            duplicatedOutput.AcquireNextFrame(1000, out duplicateFrameInformation, out screenResource);
           }
-          catch
+          catch (SharpDXException ee)
           {
+            if (ee.ResultCode.Code == ResultCode.WaitTimeout.Result.Code)
+            {
+              return GetCapture(x, y, width, height);
+            }
+            else if (ee.ResultCode.Code == ResultCode.AccessLost.Result.Code)
+            {
+              return GetCapture(x, y, width, height);
+            }
+            else
+            {
+              throw ee;
+            }
           }
-          using (var b = a.ColRange(x, x + width))
+
+          device.ImmediateContext.CopyResource(screenResource.QueryInterface<SharpDX.Direct3D11.Resource>(),
+            screenTexture);
+          screenSurface = screenTexture.QueryInterface<Surface>();
+          screenSurface.Map(MapFlags.Read, out dataStream);
+          using (var a = CopyImageToMat(1920, 1080, dataStream))
           {
-            return b.RowRange(y, y + height);
+            dataStream.Close();
+            screenSurface.Unmap();
+            screenSurface.Dispose();
+            screenResource.Dispose();
+            try
+            {
+              duplicatedOutput.ReleaseFrame();
+            }
+            catch
+            {
+            }
+            using (var b = a.ColRange(x, x + width))
+            {
+              return b.RowRange(y, y + height);
+            }
           }
         }
       }

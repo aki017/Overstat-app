@@ -20,7 +20,7 @@ namespace Overstat.View
       TwitterSetting.DataContext = new TweetUtil();
       VersionLabel.Content = Assembly.GetExecutingAssembly().GetName().Version.ToString();
       CaptureSelect.ItemsSource = CaptureWorker.Implements;
-      CaptureWorker.Instance.CaptureInstance = null;
+      CaptureSelect.SelectedValue = CaptureWorker.CaptureWorkerType;
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
@@ -53,11 +53,7 @@ namespace Overstat.View
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
       Settings.Default.Save();
-      if (CaptureWorker.CaptureWorkerType == typeof(DXGICapture))
-        CaptureWorker.Instance.CaptureInstance = new DXGICapture();
-      if (CaptureWorker.CaptureWorkerType == typeof(BitBltCapture))
-        CaptureWorker.Instance.CaptureInstance = new BitBltCapture();
-        
+
       base.OnClosing(e);
     }
 
@@ -65,6 +61,7 @@ namespace Overstat.View
     {
       var index = ((ComboBox)sender).SelectedValue;
       CaptureWorker.CaptureWorkerType = (Type)index;
+      Settings.Default.Save();
     }
 
     private void CaptureSettingOpen_Click(object sender, RoutedEventArgs e)

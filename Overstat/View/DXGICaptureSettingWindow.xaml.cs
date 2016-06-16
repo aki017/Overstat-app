@@ -20,7 +20,7 @@ namespace Overstat.View
   {
     private BackgroundWorker worker;
     private WriteableBitmap _previewImage;
-    private DXGICapture CaptureInstance = new DXGICapture();
+    private DXGICapture CaptureInstance => DXGICapture.Instance;
 
     public DXGICaptureSettingWindow()
     {

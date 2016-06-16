@@ -9,6 +9,12 @@ namespace Overstat.Capture
 {
   public class BitBltCapture : ICapture
   {
+    public static BitBltCapture Instance { get; private set; } = new BitBltCapture();
+    private BitBltCapture()
+    {
+      Instance = this;
+    }
+
     public string ApiName()
     {
       return "BitBlt";
@@ -24,7 +30,7 @@ namespace Overstat.Capture
       width = Math.Max(width, 1);
       height = Math.Max(height, 1);
       IntPtr hSrce = GetWindowDC(OverwatchDetector.OverwatchWindowHandle);
-      using (var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb))
+      using (var bmp = new Bitmap(width, height, PixelFormat.Format24bppRgb))
       {
         using (var g = Graphics.FromImage(bmp))
         {

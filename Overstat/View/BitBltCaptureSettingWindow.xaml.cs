@@ -27,11 +27,10 @@ namespace Overstat.View
   {
     private BackgroundWorker worker;
     private WriteableBitmap _previewImage;
-    private BitBltCapture CaptureInstance;
+    private BitBltCapture CaptureInstance => BitBltCapture.Instance;
     public BitBltCaptureSettingWindow()
     {
       InitializeComponent();
-      CaptureInstance = new BitBltCapture();
       worker = new BackgroundWorker { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
 
       // ProgressChangedイベントを発生させるようにする
@@ -73,11 +72,10 @@ namespace Overstat.View
 
     private void BitBltCaptureSettingWindow_OnClosed(object sender, EventArgs e)
     {
+      worker.ProgressChanged -= worker_ProgressChanged;
       worker.CancelAsync();
       worker.Dispose();
       worker = null;
     }
-
-
   }
 }

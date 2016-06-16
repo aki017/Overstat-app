@@ -57,7 +57,15 @@ namespace Overstat
       private List<MatchResult> MatchResults = new List<MatchResult>();
       private int PostCount = 0;
       private Dictionary<Hero, int> HeroDetectLog = new Dictionary<Hero, int>();
-      public ICapture CaptureInstance;
+
+      public ICapture CaptureInstance
+      {
+        get {
+          if (CaptureWorkerType == typeof(BitBltCapture)) return BitBltCapture.Instance;
+          if (CaptureWorkerType == typeof(DXGICapture)) return DXGICapture.Instance;
+          return DXGICapture.Instance;
+        }
+      }
 
       public static Type CaptureWorkerType
       {
@@ -138,6 +146,7 @@ namespace Overstat
             Thread.Sleep(10000);
             continue;
           }
+          Notify.Notify = Settings.Default.CaptureType;
           if (CaptureInstance == null)
           {
             Thread.Sleep(1000);
