@@ -1,6 +1,9 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Overstat.Capture;
 using Overstat.Properties;
 
 namespace Overstat.View
@@ -16,6 +19,8 @@ namespace Overstat.View
 
       TwitterSetting.DataContext = new TweetUtil();
       VersionLabel.Content = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+      CaptureSelect.ItemsSource = CaptureWorker.Implements;
+      CaptureWorker.Instance.CaptureInstance = null;
     }
 
     private void Open_Click(object sender, RoutedEventArgs e)
@@ -48,8 +53,26 @@ namespace Overstat.View
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
       Settings.Default.Save();
-
+      if (CaptureWorker.CaptureWorkerType == typeof(DXGICapture))
+        CaptureWorker.Instance.CaptureInstance = new DXGICapture();
+      if (CaptureWorker.CaptureWorkerType == typeof(BitBltCapture))
+        CaptureWorker.Instance.CaptureInstance = new BitBltCapture();
+        
       base.OnClosing(e);
+    }
+
+    private void CaptureSelect_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      var index = ((ComboBox)sender).SelectedValue;
+      CaptureWorker.CaptureWorkerType = (Type)index;
+    }
+
+    private void CaptureSettingOpen_Click(object sender, RoutedEventArgs e)
+    {
+      if (CaptureWorker.CaptureWorkerType == typeof(DXGICapture))
+          new DXGICaptureSettingWindow().Show();
+      if (CaptureWorker.CaptureWorkerType == typeof(BitBltCapture))
+          new BitBltCaptureSettingWindow().Show();
     }
   }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using OpenCvSharp;
+using Overstat.Properties;
 using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -14,14 +13,41 @@ using ResultCode = SharpDX.DXGI.ResultCode;
 namespace Overstat.Capture
 {
   // ReSharper disable once InconsistentNaming
-  public class DXGICapture
+  public class DXGICapture : ICapture, IDisposable
   {
-    private uint AdapterID;
-    private uint OutputID;
+    public string ApiName()
+    {
+      return "Desktop Duplication API";
+    }
+
+    public uint AdapterID
+    {
+      get { return Settings.Default.AdapterID; }
+      set
+      {
+        Settings.Default.AdapterID = value;
+        Settings.Default.Save();
+        ChangeOutput();
+      }
+    }
+
+    public uint OutputID
+    {
+      get { return Settings.Default.OutputID; }
+      set
+      {
+        Settings.Default.OutputID = value;
+        Settings.Default.Save();
+        ChangeOutput();
+      }
+    }
     private readonly Device device;
     private readonly Factory1 factory;
     private readonly Texture2DDescription texdes;
-    private readonly OutputDuplication duplicatedOutput;
+    private OutputDuplication duplicatedOutput;
+
+    public Adapter1[] Adapters => factory.Adapters1;
+    public Output[] Outputs => factory.Adapters1[AdapterID].Outputs;
 
     public DXGICapture()
     {
@@ -40,9 +66,29 @@ namespace Overstat.Capture
       texdes.SampleDescription.Count = 1;
       texdes.SampleDescription.Quality = 0;
       texdes.Usage = ResourceUsage.Staging;
+      ChangeOutput();
+    }
 
-      var output = new Output1(factory.Adapters1[AdapterID].Outputs[OutputID].NativePointer);
-      duplicatedOutput = output.DuplicateOutput(device);
+    private void ChangeOutput()
+    {
+      if (Adapters[AdapterID].Outputs.Length <= OutputID)
+      {
+        if (Adapters[AdapterID].Outputs.Length == 0)
+        {
+          AdapterID = 0;
+        }
+        OutputID = 0;
+      }
+      var output = new Output1(Adapters[AdapterID].Outputs[OutputID].NativePointer);
+      duplicatedOutput?.Dispose();
+      try
+      {
+        duplicatedOutput = output.DuplicateOutput(device);
+      }
+      catch
+      {
+        duplicatedOutput = null;
+      }
     }
 
     private Mat CopyImageToMat(int width, int height, DataStream stream)
@@ -56,6 +102,7 @@ namespace Overstat.Capture
 
     public Mat GetCapture(int x = 0, int y = 0, int width = 1920, int height = 1080)
     {
+      if (duplicatedOutput == null) return null;
       using (var screenTexture = new Texture2D(device, texdes))
       {
 
@@ -74,8 +121,16 @@ namespace Overstat.Capture
         {
           if (ee.ResultCode.Code == ResultCode.WaitTimeout.Result.Code)
           {
+            return GetCapture(x, y, width, height);
           }
-          throw ee;
+          else if (ee.ResultCode.Code == ResultCode.AccessLost.Result.Code)
+          {
+            return GetCapture(x, y, width, height);
+          }
+          else
+          {
+            throw ee;
+          }
         }
 
         // copy resource into memory that can be accessed by the CPU
@@ -93,13 +148,26 @@ namespace Overstat.Capture
           screenSurface.Unmap();
           screenSurface.Dispose();
           screenResource.Dispose();
-          duplicatedOutput.ReleaseFrame();
+          try
+          {
+            duplicatedOutput.ReleaseFrame();
+          }
+          catch
+          {
+          }
           using (var b = a.ColRange(x, x + width))
           {
             return b.RowRange(y, y + height);
           }
         }
       }
+    }
+
+    public void Dispose()
+    {
+      device?.Dispose();
+      factory?.Dispose();
+      duplicatedOutput?.Dispose();
     }
   }
 }

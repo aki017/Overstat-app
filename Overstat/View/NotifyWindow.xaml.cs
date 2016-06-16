@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using Overstat.Capture;
 
 namespace Overstat.View
 {
@@ -8,7 +9,7 @@ namespace Overstat.View
   /// </summary>
   public partial class NotifyWindow : Window
   {
-    public NotifyWindow(Capture.Capture c)
+    public NotifyWindow(CaptureWorker c)
     {
       InitializeComponent();
       

@@ -100,5 +100,41 @@ namespace Overstat.Properties {
                 this["ShowNotification"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint AdapterID {
+            get {
+                return ((uint)(this["AdapterID"]));
+            }
+            set {
+                this["AdapterID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint OutputID {
+            get {
+                return ((uint)(this["OutputID"]));
+            }
+            set {
+                this["OutputID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CaptureType {
+            get {
+                return ((string)(this["CaptureType"]));
+            }
+            set {
+                this["CaptureType"] = value;
+            }
+        }
     }
 }

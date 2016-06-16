@@ -25,7 +25,7 @@ namespace Overstat
     {
       InitializeComponent();
 
-      var c = new Capture.Capture();
+      var c = new Capture.CaptureWorker();
       c.Start();
 
       var notificationWindow = new NotifyWindow(c);

@@ -8,6 +8,7 @@ using System.Windows;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using Overstat.Capture;
+using Overstat.Properties;
 using SharpDX.DXGI;
 using Squirrel;
 using Window = OpenCvSharp.Window;
@@ -39,6 +40,8 @@ namespace Overstat
       };
       Dispatcher.UnhandledException += (sender, args) => ErrorHandle(args.Exception);
 
+      Settings.Default.Upgrade();
+      Settings.Default.Save();
     }
 
     public void ErrorHandle(Exception e)

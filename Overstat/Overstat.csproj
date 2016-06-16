@@ -174,12 +174,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="APIClient.cs" />
-    <Compile Include="Capture\Capture.cs" />
+    <Compile Include="Capture\BitBltCapture.cs" />
+    <Compile Include="Capture\CaptureWorker.cs" />
     <Compile Include="Capture\DXGICapture.cs" />
+    <Compile Include="Capture\ICapture.cs" />
     <Compile Include="Capture\OverwatchDetector.cs" />
     <Compile Include="Capture\PlayingState.cs" />
     <Compile Include="ScreenCaptureUtil.cs" />
     <Compile Include="TweetUtil.cs" />
+    <Compile Include="View\BitBltCaptureSettingWindow.xaml.cs">
+      <DependentUpon>BitBltCaptureSettingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DXGICaptureSettingWindow.xaml.cs">
+      <DependentUpon>DXGICaptureSettingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NotifyBinding.cs" />
     <Compile Include="View\NotifyWindow.xaml.cs">
       <DependentUpon>NotifyWindow.xaml</DependentUpon>
@@ -190,6 +198,14 @@
     <Compile Include="View\TwitterAuthWindow.xaml.cs">
       <DependentUpon>TwitterAuthWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\BitBltCaptureSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DXGICaptureSettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

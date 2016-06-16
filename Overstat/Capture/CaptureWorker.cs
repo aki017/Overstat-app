@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using Overstat.Model.GameData;
 using Overstat.Model;
+using Overstat.Properties;
 using Overstat.View;
-using Squirrel;
 
 namespace Overstat
 {
   namespace Capture
   {
-    public class Capture
+    public class CaptureWorker
     {
       /// <summary>
       /// Normal
@@ -31,7 +30,7 @@ namespace Overstat
 
       private Mat PlayingGageTemplate;
       private Mat PlayingGageTemplateMask;
-      private Mat[] Result1Templates; 
+      private Mat[] Result1Templates;
       private Mat[] Result1TemplateMasks;
       private Mat[] Result2Templates;
       private Mat[] Result2TemplateMasks;
@@ -51,16 +50,26 @@ namespace Overstat
         set { playingStates[playingStatePointer++ % 5] = value; }
       }
 
+      public static Type[] Implements => Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetInterfaces().Contains(typeof(ICapture))).ToArray();
+
       public NotifyBinding Notify = new NotifyBinding();
 
       private List<MatchResult> MatchResults = new List<MatchResult>();
       private int PostCount = 0;
       private Dictionary<Hero, int> HeroDetectLog = new Dictionary<Hero, int>();
-      private DXGICapture CaptureInstance;
+      public ICapture CaptureInstance;
 
-      public Capture()
+      public static Type CaptureWorkerType
       {
-        CaptureInstance = new DXGICapture();
+        get { return Type.GetType(Settings.Default.CaptureType, false) ?? typeof(DXGICapture); }
+        set { Settings.Default.CaptureType = value.FullName; }
+      }
+
+      public static CaptureWorker Instance;
+
+      public CaptureWorker()
+      {
+        Instance = this;
         Playing1Template = new Mat(GetTemplateImage("Playing1.png"));
         Playing1TemplateMask = new Mat(GetTemplateImage("Playing1Mask.png"));
         Playing2Template = new Mat(GetTemplateImage("Playing2.png"));
@@ -127,6 +136,11 @@ namespace Overstat
           if (!PlayingOverwatch())
           {
             Thread.Sleep(10000);
+            continue;
+          }
+          if (CaptureInstance == null)
+          {
+            Thread.Sleep(1000);
             continue;
           }
 
