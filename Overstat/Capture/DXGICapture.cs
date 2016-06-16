@@ -105,8 +105,6 @@ namespace Overstat.Capture
       if (duplicatedOutput == null) return null;
       using (var screenTexture = new Texture2D(device, texdes))
       {
-
-        // duplicate output stuff
         Resource screenResource = null;
         DataStream dataStream;
         Surface screenSurface;
@@ -133,15 +131,9 @@ namespace Overstat.Capture
           }
         }
 
-        // copy resource into memory that can be accessed by the CPU
         device.ImmediateContext.CopyResource(screenResource.QueryInterface<SharpDX.Direct3D11.Resource>(), screenTexture);
-        // cast from texture to surface, so we can access its bytes
         screenSurface = screenTexture.QueryInterface<Surface>();
-
-        // map the resource to access it
         screenSurface.Map(MapFlags.Read, out dataStream);
-
-        // seek within the stream and read one byte
         using (var a = CopyImageToMat(1920, 1080, dataStream))
         {
           dataStream.Close();
