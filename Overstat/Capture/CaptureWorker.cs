@@ -60,7 +60,8 @@ namespace Overstat
 
       public ICapture CaptureInstance
       {
-        get {
+        get
+        {
           if (CaptureWorkerType == typeof(BitBltCapture)) return BitBltCapture.Instance;
           if (CaptureWorkerType == typeof(DXGICapture)) return DXGICapture.Instance;
           return DXGICapture.Instance;
@@ -69,8 +70,22 @@ namespace Overstat
 
       public static Type CaptureWorkerType
       {
-        get { return Type.GetType(Settings.Default.CaptureType, false) ?? typeof(DXGICapture); }
-        set { Settings.Default.CaptureType = value.FullName; }
+        get
+        {
+          try
+          {
+            return Type.GetType(Settings.Default.CaptureType);
+          }
+          catch
+          {
+            return typeof (DXGICapture);
+          }
+        }
+        set
+        {
+          Settings.Default.CaptureType = value?.FullName;
+          Settings.Default.Save();
+        }
       }
 
       public static CaptureWorker Instance;
@@ -164,7 +179,6 @@ namespace Overstat
                 MatchResults.Add(new MatchResult());
               }
               var hero = DetectHero();
-              Notify.Notify = hero.ToString();
               if (!HeroDetectLog.ContainsKey(hero))
               {
                 HeroDetectLog[hero] = 0;

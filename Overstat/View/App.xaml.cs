@@ -29,7 +29,7 @@ namespace Overstat
       {
         using (var mgr = await UpdateManager.GitHubUpdateManager("https://github.com/aki017/Overstat-app"))
         {
-          await mgr.UpdateApp();
+          var entry = await mgr.UpdateApp();
         }
       });
       AppDomain.CurrentDomain.UnhandledException += (sender, args) => ErrorHandle(args.ExceptionObject as Exception);
@@ -40,8 +40,14 @@ namespace Overstat
       };
       Dispatcher.UnhandledException += (sender, args) => ErrorHandle(args.Exception);
 
-      Settings.Default.Upgrade();
-      Settings.Default.Save();
+      var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+      if (Settings.Default.AssemblyVersion != version)
+      {
+        Settings.Default.Upgrade();
+        MessageBox.Show($"{Settings.Default.AssemblyVersion}\n↯↯↯↯↯\n{version}", "Upgrade");
+        Settings.Default.AssemblyVersion = version;
+        Settings.Default.Save();
+      }
     }
 
     public void ErrorHandle(Exception e)

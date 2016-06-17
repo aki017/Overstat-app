@@ -136,5 +136,17 @@ namespace Overstat.Properties {
                 this["CaptureType"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AssemblyVersion {
+            get {
+                return ((string)(this["AssemblyVersion"]));
+            }
+            set {
+                this["AssemblyVersion"] = value;
+            }
+        }
     }
 }

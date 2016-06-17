@@ -60,8 +60,8 @@ namespace Overstat.View
     private void CaptureSelect_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       var index = ((ComboBox)sender).SelectedValue;
+      if (index == null) return;
       CaptureWorker.CaptureWorkerType = (Type)index;
-      Settings.Default.Save();
     }
 
     private void CaptureSettingOpen_Click(object sender, RoutedEventArgs e)
