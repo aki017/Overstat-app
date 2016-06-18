@@ -9,11 +9,11 @@ namespace Overstat.View
   /// </summary>
   public partial class NotifyWindow : Window
   {
-    public NotifyWindow(CaptureWorker c)
+    public NotifyWindow()
     {
       InitializeComponent();
       
-      label.DataContext = c.Notify;
+      label.DataContext = CaptureWorker.Instance.Notify;
     }
   }
 }

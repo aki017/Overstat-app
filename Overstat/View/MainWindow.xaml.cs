@@ -27,12 +27,6 @@ namespace Overstat
 
       var c = new Capture.CaptureWorker();
       c.Start();
-
-      var notificationWindow = new NotifyWindow(c);
-      var desktop = System.Windows.Forms.Screen.AllScreens.First().Bounds;
-      notificationWindow.Top = desktop.Height - (notificationWindow.Height + 10);
-      notificationWindow.Left = desktop.Left + desktop.Width - (notificationWindow.Width + 10);
-      notificationWindow.Show();
     }
     
     ObservableCollection<MatchResult> results = new ObservableCollection<MatchResult>();

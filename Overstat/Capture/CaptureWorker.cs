@@ -161,7 +161,6 @@ namespace Overstat
             Thread.Sleep(10000);
             continue;
           }
-          Notify.Notify = Settings.Default.CaptureType;
           if (CaptureInstance == null)
           {
             Thread.Sleep(1000);
@@ -170,6 +169,7 @@ namespace Overstat
 
 
           playingState = DetectState();
+          Notify.Notify = $"{playingState}";
           var targetPath = "";
           switch (playingState)
           {
@@ -211,6 +211,7 @@ namespace Overstat
                 MatchResults.Last().Hero = HeroDetectLog.OrderBy(kvp => kvp.Value).Last().Key;
                 HeroDetectLog.Clear();
                 DetectScore();
+                Notify.Notify = MatchResults.Last().ToString();
                 if (File.Exists(targetPath) &&
                     File.Exists(GetOutputPath(2)))
                 {
@@ -249,7 +250,7 @@ namespace Overstat
       private string PrefixTime = DateTime.Now.ToString("HHmmss");
       public string GetOutputPath(int num)
       {
-        return Path.Combine($"{Properties.Settings.Default.SaveFolder}\\{PrefixTime}{MatchResults.Count}_{num}.png").ToString();
+        return Path.Combine($"{Settings.Default.SaveFolder}\\{PrefixTime}{MatchResults.Count}_{num}.png").ToString();
       }
 
       public string GetTemplateImage(string path)

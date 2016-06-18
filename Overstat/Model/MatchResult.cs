@@ -15,5 +15,10 @@ namespace Overstat.Model
     public int Damage { get; set; }
     public int Heal { get; set; }
     public int Deaths { get; set; }
+
+    public override string ToString()
+    {
+      return $"{Hero}/{Kills}/{ObjectiveKills}/{ObjectiveTime}/{Damage}/{Heal}/{Deaths}";
+    }
   }
 }

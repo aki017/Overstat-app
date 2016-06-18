@@ -9,6 +9,7 @@
         Title="SettingWindow" Height="300" Width="400">
   <Grid>
     <Label x:Name="TwitterSetting" Content="TwitterSetting" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" FontSize="16"/>
+    <Button x:Name="AuthTwitter" Content="Authorize"  HorizontalAlignment="Left" Margin="14,46,0,0" VerticalAlignment="Top" Width="358" Height="30" IsEnabled="{Binding IsTweetable}"  Click="AuthTwitter_Click"/>
 
     <Label x:Name="FolderSetting" Content="FolderSetting" HorizontalAlignment="Left" Margin="10,80,0,0" VerticalAlignment="Top" FontSize="16"/>
     <Label x:Name="ImageSaveFolder" Content="Save Folder" HorizontalAlignment="Left" Margin="14,111,0,0" VerticalAlignment="Top" Width="100" Height="30" />
@@ -16,15 +17,17 @@
     Text="{Binding Source={x:Static properties:Settings.Default}, Path=SaveFolder}"
      />
     <Button x:Name="Open" Content="Open" HorizontalAlignment="Left" Margin="322,111,0,0" VerticalAlignment="Top" Width="50" Height="30" Click="Open_Click" />
-    <Button x:Name="AuthTwitter" Content="Authorize"  HorizontalAlignment="Left" Margin="14,46,0,0" VerticalAlignment="Top" Width="358" Height="30" IsEnabled="{Binding IsTweetable}"  Click="AuthTwitter_Click"/>
 
-    <Label x:Name="VersionLabel" Content="v0.0.0.0" HorizontalAlignment="Left" Margin="262,229,0,0" VerticalAlignment="Top" Width="110" Height="30" IsEnabled="False" />
-    <CheckBox x:Name="NotificationWindowShowFlag" Content="NotificationWindowShowFlag" HorizontalAlignment="Left" Margin="14,235,0,0" VerticalAlignment="Top" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=ShowNotification, Mode=TwoWay}"/>
     <Label x:Name="CaptureSetting" Content="CaptureSetting" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" FontSize="16"/>
     <Label x:Name="CaptureLabel" Content="Capture" HorizontalAlignment="Left" Margin="14,182,0,0" VerticalAlignment="Top" Width="100" Height="30" />
     <ComboBox x:Name="CaptureSelect" HorizontalAlignment="Left" Margin="117,182,0,0" VerticalAlignment="Top" Width="200" RenderTransformOrigin="0.228,0.615" Height="30"
     SelectionChanged="CaptureSelect_OnSelectionChanged"
     />
     <Button x:Name="CaptureSettingOpen" Content="Detail" HorizontalAlignment="Left" Margin="322,182,0,0" VerticalAlignment="Top" Width="50" Height="30" Click="CaptureSettingOpen_Click" />
+
+    <Button x:Name="NotificationWindowOpen" Content="Open Notification Window" HorizontalAlignment="Left" Margin="14,229,0,0" VerticalAlignment="Top" Width="163" Height="30" Click="NotificationWindowOpen_OnClickOpen_Click" />
+
+    <!-- <CheckBox x:Name="NotificationWindowShowFlag" Content="NotificationWindowShowFlag" HorizontalAlignment="Left" Margin="14,235,0,0" VerticalAlignment="Top" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=ShowNotification, Mode=TwoWay}"/> -->
+    <Label x:Name="VersionLabel" Content="v0.0.0.0" HorizontalAlignment="Left" Margin="262,229,0,0" VerticalAlignment="Top" Width="110" Height="30" IsEnabled="False" />
   </Grid>
 </Window>

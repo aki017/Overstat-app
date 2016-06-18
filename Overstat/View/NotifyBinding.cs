@@ -14,15 +14,31 @@ namespace Overstat.View
 
     public string Notify
     {
-      get { return a; }
+      get
+      {
+        var a = BackLog.Skip(BackLogIndex).Take(30 - BackLogIndex);
+        var b = BackLog.Take(BackLogIndex);
+        return string.Join("\n", a) + "\n" + string.Join("\n", b);
+      }
       set
       {
-        if (value != null && a == value) return;
-        a = value;
-        if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Notify"));
+        if (value == null || value == BackLog[BackLogIndex]) return;
+        BackLog[(30 + BackLogIndex - 1) % 30] = value;
+        BackLogIndex--;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Notify"));
       }
     }
 
-    public string a = "";
+    public string[] BackLog = new string[30];
+    private int _BackLogIndex;
+
+    private int BackLogIndex
+    {
+      get
+      {
+        return _BackLogIndex;
+      }
+      set { _BackLogIndex = (30 + value) % 30; }
+    }
   }
 }

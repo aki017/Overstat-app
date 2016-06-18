@@ -44,7 +44,7 @@ namespace Overstat
       if (Settings.Default.AssemblyVersion != version)
       {
         Settings.Default.Upgrade();
-        MessageBox.Show($"{Settings.Default.AssemblyVersion}\n↯↯↯↯↯\n{version}", "Upgrade");
+        MessageBox.Show($"{Settings.Default.AssemblyVersion}\n↯↯↯↯↯↯↯↯↯↯\n{version}", "Upgrade");
         Settings.Default.AssemblyVersion = version;
         Settings.Default.Save();
       }

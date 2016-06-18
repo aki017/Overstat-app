@@ -71,5 +71,10 @@ namespace Overstat.View
       if (CaptureWorker.CaptureWorkerType == typeof(BitBltCapture))
           new BitBltCaptureSettingWindow().Show();
     }
+
+    private void NotificationWindowOpen_OnClickOpen_Click(object sender, RoutedEventArgs e)
+    {
+      new NotifyWindow().Show();
+    }
   }
 }
