@@ -7,11 +7,24 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Overstat.Model;
+using Overstat.Properties;
 
 namespace Overstat
 {
   static class APIClient
   {
+    internal static string Token
+    {
+      get
+      {
+        if (!string.IsNullOrEmpty(Settings.Default.Token)) return Settings.Default.Token;
+        Settings.Default.Token = System.Guid.NewGuid().ToString();
+        Settings.Default.Save();
+        return Settings.Default.Token;
+      }
+    }
+
+
     internal static async void Submit(MatchResult m, string filePath1, string filePath2)
     {
       try
@@ -20,7 +33,7 @@ namespace Overstat
         var httpClient = new HttpClient();
         var form = new MultipartFormDataContent();
 
-        form.Add(new StringContent("test"), "token");
+        form.Add(new StringContent(Token), "token");
 
 
         var bytes1 = File.ReadAllBytes(filePath1);
