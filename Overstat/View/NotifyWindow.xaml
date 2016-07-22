@@ -11,7 +11,8 @@
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
   </Window.Resources>
-  <Grid Background="#4C64CCFF" Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowNotification, Mode=TwoWay, Converter={StaticResource BoolToVisibility}}">
+  <Grid Background="#4C64CCFF">
+    <!--  Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowNotification, Mode=TwoWay, Converter={StaticResource BoolToVisibility}}" -->
     <Label x:Name="label" Content="{Binding Path=Notify}" HorizontalAlignment="Stretch" Margin="10,10,10,10" VerticalAlignment="Stretch" Foreground="White" BorderThickness="0" FontSize="24">
     </Label>
   </Grid>

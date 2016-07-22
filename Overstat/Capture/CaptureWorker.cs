@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using OpenCvSharp;
+using OpenCvSharp.XFeatures2D;
 using Overstat.Model.GameData;
 using Overstat.Model;
 using Overstat.Properties;
@@ -50,6 +52,23 @@ namespace Overstat
         set { playingStates[playingStatePointer++ % 5] = value; }
       }
 
+      private Hero[] heroDetect = new Hero[30];
+      private int heroDetectPointer;
+      private Hero hero
+      {
+        get
+        {
+          return heroDetect.GroupBy(s => s).OrderBy(g => g.Count()).First().Key;
+        }
+        set
+        {
+          if (value != Hero.Unknown)
+          {
+            heroDetect[heroDetectPointer++ % 30] = value;
+          }
+        }
+      }
+
       public static Type[] Implements => Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetInterfaces().Contains(typeof(ICapture))).ToArray();
 
       public NotifyBinding Notify = new NotifyBinding();
@@ -78,7 +97,7 @@ namespace Overstat
           }
           catch
           {
-            return typeof (DXGICapture);
+            return typeof(DXGICapture);
           }
         }
         set
@@ -158,18 +177,19 @@ namespace Overstat
         {
           if (!PlayingOverwatch())
           {
-            Thread.Sleep(10000);
+            Notify.Notify = "Not executing overwatch";
+            Thread.Sleep(1000);
             continue;
           }
           if (CaptureInstance == null)
           {
+            Notify.Notify = "Capture error happen";
             Thread.Sleep(1000);
             continue;
           }
 
 
           playingState = DetectState();
-          Notify.Notify = $"{playingState}";
           var targetPath = "";
           switch (playingState)
           {
@@ -178,12 +198,8 @@ namespace Overstat
               {
                 MatchResults.Add(new MatchResult());
               }
-              var hero = DetectHero();
-              if (!HeroDetectLog.ContainsKey(hero))
-              {
-                HeroDetectLog[hero] = 0;
-              }
-              HeroDetectLog[hero]++;
+              hero = DetectHero();
+              Notify.Notify = $"Play detected as {hero}";
               break;
             case PlayingState.Result1:
               targetPath = GetOutputPath(1);
@@ -307,6 +323,7 @@ namespace Overstat
 
       public Hero DetectHero()
       {
+        DetectHp();
         using (var src = CaptureInstance.GetCapture(1490, 900, 200, 100))
         using (var gray = src.CvtColor(ColorConversionCodes.RGB2GRAY))
         using (var binary = gray.Threshold(200, 255, ThresholdTypes.Binary))
@@ -337,6 +354,46 @@ namespace Overstat
 
           return target;
         }
+      }
+
+      private void DetectHp()
+      {
+        using (var im = CaptureInstance.GetCapture(260, 910, 100, 40))
+        {
+          NumberDetector.Detect(im);
+        }
+      }
+
+      private int DetectNum(Mat src)
+      {
+        var result = 0;
+        var pos = 0;
+
+        using (var tmp = new Mat())
+        {
+          // 10pxずつずらしながら認識
+          for (var ix = 0; ix < src.Width / 10 - 10; ix++)
+          {
+            var t = src.ColRange(ix * 10, Math.Min(ix * 10 + 60, src.Width - 60));
+
+            var r = Enumerable.Range(0, 10).Select((i) =>
+            {
+              Cv2.MatchTemplate(t, NumberTemplates[i], tmp, TemplateMatchModes.CCorrNormed, NumberTemplateMasks[i]);
+              double _ = 0;
+              double v1 = 0;
+              Point __ = new Point();
+              Point v2 = new Point();
+              tmp.MinMaxLoc(out _, out v1, out __, out v2);
+              return new { n = i, v = v1, x = ix * 10 + v2.X };
+            }).OrderBy(s => s.v).Last();
+
+            if (r.v > 0.91 && r.x - pos > 10)
+            {
+              result = result * 10 + r.n;
+            }
+          }
+        }
+        return result;
       }
 
       public void DetectScore()

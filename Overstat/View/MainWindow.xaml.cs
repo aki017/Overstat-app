@@ -27,6 +27,8 @@ namespace Overstat
 
       var c = new Capture.CaptureWorker();
       c.Start();
+
+      new NotifyWindow().Show();
     }
     
     ObservableCollection<MatchResult> results = new ObservableCollection<MatchResult>();
