@@ -52,23 +52,6 @@ namespace Overstat
         set { playingStates[playingStatePointer++ % 5] = value; }
       }
 
-      private Hero[] heroDetect = new Hero[30];
-      private int heroDetectPointer;
-      private Hero hero
-      {
-        get
-        {
-          return heroDetect.GroupBy(s => s).OrderBy(g => g.Count()).First().Key;
-        }
-        set
-        {
-          if (value != Hero.Unknown)
-          {
-            heroDetect[heroDetectPointer++ % 30] = value;
-          }
-        }
-      }
-
       public static Type[] Implements => Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetInterfaces().Contains(typeof(ICapture))).ToArray();
 
       public NotifyBinding Notify = new NotifyBinding();
@@ -198,7 +181,12 @@ namespace Overstat
               {
                 MatchResults.Add(new MatchResult());
               }
-              hero = DetectHero();
+              var hero = DetectHero();
+              if (!HeroDetectLog.ContainsKey(hero))
+              {
+                HeroDetectLog[hero] = 0;
+              }
+              HeroDetectLog[hero]++;
               Notify.Notify = $"Play detected as {hero}";
               break;
             case PlayingState.Result1:
