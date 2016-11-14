@@ -3,6 +3,7 @@
   public enum Hero
   {
     Unknown,
+    Ana,
     Genji,
     Mccree,
     Pharah,

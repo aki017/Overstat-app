@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using OpenCvSharp;
 using OpenCvSharp.XFeatures2D;
 using Overstat.Model.GameData;
@@ -106,15 +107,15 @@ namespace Overstat
         Result2Templates = new[] { new Mat(GetTemplateImage("Result2.png")) };
         Result2TemplateMasks = new[] { new Mat(GetTemplateImage("Result2Mask.png")) };
         HeroTemplates = Enum.GetValues(typeof(Hero)).Cast<Hero>().ToDictionary(hero => hero, hero =>
-       {
-         if (hero == Hero.Unknown)
-         {
-           return new Mat[0];
-         }
-         var dirname = hero.ImageName();
-         var dir = Path.Combine(Environment.CurrentDirectory, "Model", "GameData", "Template", "Hero", dirname);
-         return new DirectoryInfo(dir).GetFiles().Select(f => new Mat(f.FullName, ImreadModes.GrayScale)).ToArray();
-       });
+          {
+            if (hero == Hero.Unknown)
+            {
+              return new Mat[0];
+            }
+            var dirname = hero.ImageName();
+            var dir = Path.Combine(Environment.CurrentDirectory, "Model", "GameData", "Template", "Hero", "Icon", dirname);
+            return new DirectoryInfo(dir).GetFiles().Select(f => new Mat(f.FullName).Resize(new Size(192, 192))).ToArray();
+          });
         CharactorMask = new Mat(GetTemplateImage("Hero\\CharaMask.png"));
         NumberTemplates = new[]
         {
@@ -149,31 +150,37 @@ namespace Overstat
 
       public void Start()
       {
-        thread = new Thread(Loop);
-        thread.IsBackground = true;
-        thread.Start();
+        Task.Run(Loop);
       }
 
-      public void Loop()
+      private async Task WaitOverwatchRunning()
+      {
+        while (!PlayingOverwatch())
+        {
+          Notify.Notify = "Not executing overwatch";
+          await Task.Delay(1000);
+        }
+      }
+
+      private async Task WaitForCaptureInstance()
+      {
+        while (CaptureInstance == null)
+        {
+          Notify.Notify = "Capture error happen";
+          await Task.Delay(1000);
+        }
+      }
+
+      public async Task Loop()
       {
         while (true)
         {
-          if (!PlayingOverwatch())
-          {
-            Notify.Notify = "Not executing overwatch";
-            Thread.Sleep(1000);
-            continue;
-          }
-          if (CaptureInstance == null)
-          {
-            Notify.Notify = "Capture error happen";
-            Thread.Sleep(1000);
-            continue;
-          }
-
+          await WaitOverwatchRunning();
+          await WaitForCaptureInstance();
 
           playingState = DetectState();
           var targetPath = "";
+          Notify.Notify = playingState.ToString();
           switch (playingState)
           {
             case PlayingState.Playing:
@@ -187,7 +194,7 @@ namespace Overstat
                 HeroDetectLog[hero] = 0;
               }
               HeroDetectLog[hero]++;
-              Notify.Notify = $"Play detected as {hero}";
+              //Notify.Notify = $"Play detected as {hero}";
               break;
             case PlayingState.Result1:
               targetPath = GetOutputPath(1);
@@ -276,7 +283,7 @@ namespace Overstat
           var v1 = ScreenCaptureUtil.DetectImage(src, Playing1Template, Playing1TemplateMask);
           var v2 = ScreenCaptureUtil.DetectImage(src, Playing2Template, Playing2TemplateMask);
           //var gage = ScreenCaptureUtil.DetectImage(src, PlayingGageTemplate, PlayingGageTemplateMask);
-          //Notify.Notify = $"{v1}\n{v2}\n{gage}";
+          //Notify.Notify = $"{v1}\n{v2}";
           if (v1 > 0.98 || v2 > 0.98) return true;
           return false;
         }
@@ -312,10 +319,11 @@ namespace Overstat
       public Hero DetectHero()
       {
         DetectHp();
-        using (var src = CaptureInstance.GetCapture(1490, 900, 200, 100))
+
+        using (var src = CaptureInstance.GetCapture(84, 836, 192, 192))
         using (var gray = src.CvtColor(ColorConversionCodes.RGB2GRAY))
-        using (var binary = gray.Threshold(200, 255, ThresholdTypes.Binary))
         {
+
           var max = 0d;
           var target = Hero.Unknown;
           foreach (var hero in Enum.GetValues(typeof(Hero)).Cast<Hero>())
@@ -327,8 +335,8 @@ namespace Overstat
 
             foreach (var t in HeroTemplates[hero])
             {
-              var v = ScreenCaptureUtil.DetectImage(binary, t);
-              if (v > 0.9)
+              var v = ScreenCaptureUtil.DetectImage(src, t, t.Threshold(30, 255, ThresholdTypes.Binary));
+              if (v > 0.99)
               {
                 return hero;
               }
